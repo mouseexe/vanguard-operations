@@ -40,9 +40,13 @@ async def on_message(message):
         timestamp.close()
         minute = datetime.now().strftime('%M')
         hour = int(datetime.now().strftime('%H'))
+        day = datetime.now().weekday()
         msg = ''
         if time == '' or time == 'override' or get_time_elapsed(int(time), int(minute)) >= cadence:
             write(minute)
+            if (day == 4 and hour >= 21) or 4 < day <= 6 or (day == 0 and hour <= 2):
+                # This is the ID for Weekend
+                msg = '<@&991109494253822012>'
             # times seem to be four hours ahead
             # 2 AM to 8 AM
             if 6 <= hour < 12:
