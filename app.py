@@ -27,8 +27,7 @@ async def on_message(message):
         minute = datetime.now().strftime('%M')
         hour = int(datetime.now().strftime('%H'))
         msg = ''
-        time_elapsed = get_time_elapsed(int(time), int(minute))
-        if time == "" or time_elapsed >= 30:
+        if time == "" or get_time_elapsed(int(time), int(minute)) >= 30:
             timestamp = open('timestamp', 'w')
             timestamp.write(minute)
             # times seem to be four hours ahead
@@ -46,7 +45,7 @@ async def on_message(message):
                 msg = 'This will ping the night shift.'
             await message.channel.send(msg)
         else:
-            await message.channel.send('Someone else pinged too recently! You can ping again in' + time_elapsed + 'minutes.')
+            await message.channel.send('Someone else pinged too recently! You can ping again in' + get_time_elapsed(int(time), int(minute)) + 'minutes.')
 
 
 @client.event
