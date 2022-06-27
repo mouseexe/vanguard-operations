@@ -46,6 +46,8 @@ async def on_message(message):
             await message.channel.send(msg)
         else:
             await message.channel.send('Someone else pinged too recently! You can ping again in ' + str(30 - get_time_elapsed(int(time), int(minute))) + ' minutes.')
+    else:
+        print(str(message.author) + ': ' + message.content)
 
 
 @client.event
