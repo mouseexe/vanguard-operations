@@ -8,10 +8,10 @@ TOKEN = os.environ.get('DISCORDTOKEN', 'default value')
 client = discord.Client()
 
 
-def is_time_elapsed(time, now):
-    if now > time:
-        return now - time >= 30
-    return (now + 60) - time >= 30
+def get_time_elapsed(time, now):
+    if now >= time:
+        return now - time
+    return (now + 60) - time
 
 
 @client.event
@@ -26,22 +26,27 @@ async def on_message(message):
         timestamp.close()
         minute = datetime.now().strftime('%M')
         hour = int(datetime.now().strftime('%H'))
-        fulltime = datetime.now().strftime('%H:%M')
         msg = ''
-        if time == "" or is_time_elapsed(int(time), int(minute)):
+        time_elapsed = get_time_elapsed(int(time), int(minute))
+        if time == "" or time_elapsed >= 30:
             timestamp = open('timestamp', 'w')
             timestamp.write(minute)
-            if 2 <= hour < 8:
-                msg = 'morning shift'
-            if 8 <= hour < 17:
-                msg = 'day shift'
-            if 17 <= hour < 22:
-                msg = 'evening shift'
-            if 22 <= hour < 24 or 0 <= hour < 2:
-                msg = 'night shift'
+            # times seem to be four hours ahead
+            # 2 AM to 8 AM
+            if 6 <= hour < 12:
+                msg = 'This will ping the morning shift.'
+            # 8 AM to 5 PM
+            if 12 <= hour < 21:
+                msg = 'This will ping the day shift.'
+            # 5 PM to 10 PM
+            if 21 <= hour < 24 or 0 <= hour < 2:
+                msg = 'This will ping the evening shift.'
+            # 10 PM to 2 AM
+            if 2 <= hour < 6:
+                msg = 'This will ping the night shift.'
             await message.channel.send(msg)
         else:
-            await message.channel.send(fulltime)
+            await message.channel.send('Someone else pinged too recently! You can ping again in' + time_elapsed + 'minutes.')
 
 
 @client.event
