@@ -20,7 +20,7 @@ async def on_message(message):
     if message.author == client.user:
         return
 
-    if 'test' in message.content:
+    if '<@!991063755939016875>' in message.content:
         timestamp = open('timestamp', 'r')
         time = timestamp.read()
         timestamp.close()
