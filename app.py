@@ -45,7 +45,7 @@ async def on_message(message):
                 msg = 'This will ping the night shift.'
             await message.channel.send(msg)
         else:
-            await message.channel.send('Someone else pinged too recently! You can ping again in' + get_time_elapsed(int(time), int(minute)) + 'minutes.')
+            await message.channel.send('Someone else pinged too recently! You can ping again in' + str(get_time_elapsed(int(time), int(minute))) + 'minutes.')
 
 
 @client.event
