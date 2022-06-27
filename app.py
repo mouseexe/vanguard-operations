@@ -31,6 +31,7 @@ async def on_message(message):
     # reset clock if admin wants to
     if message.content == '/reset' and message.author.guild_permissions.administrator:
         write('override')
+        await message.add_reaction('✔')
 
     # This is the ID for the Vanguard Operations bot
     if '<@991063755939016875>' in message.content:
