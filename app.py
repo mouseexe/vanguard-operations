@@ -26,6 +26,7 @@ async def on_message(message):
         timestamp.close()
         minute = datetime.now().strftime('%M')
         hour = int(datetime.now().strftime('%H'))
+        fulltime = datetime.now().strftime('%H:%M')
         msg = ''
         if time == "" or is_time_elapsed(int(time), int(minute)):
             timestamp = open('timestamp', 'w')
@@ -40,8 +41,7 @@ async def on_message(message):
                 msg = 'night shift'
             await message.channel.send(msg)
         else:
-            msg = 'no ping'
-            await message.channel.send(msg)
+            await message.channel.send(fulltime)
 
 
 @client.event
