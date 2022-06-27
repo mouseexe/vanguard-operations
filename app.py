@@ -33,16 +33,16 @@ async def on_message(message):
             # times seem to be four hours ahead
             # 2 AM to 8 AM
             if 6 <= hour < 12:
-                msg = 'This will ping the morning shift.'
+                msg = '<@&991090248433950803>'
             # 8 AM to 5 PM
             if 12 <= hour < 21:
-                msg = 'This will ping the day shift.'
+                msg = '<@&991090325894336542>'
             # 5 PM to 10 PM
             if 21 <= hour < 24 or 0 <= hour < 2:
-                msg = 'This will ping the evening shift.'
+                msg = '<@&991090361369784360>'
             # 10 PM to 2 AM
             if 2 <= hour < 6:
-                msg = 'This will ping the night shift.'
+                msg = '<@&991090429342679110>'
             await message.reply(msg)
         else:
             await message.reply('Someone else pinged too recently! You can ping again in ' + str(30 - get_time_elapsed(int(time), int(minute))) + ' minutes.')
