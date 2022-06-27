@@ -20,7 +20,7 @@ async def on_message(message):
     if message.author == client.user:
         return
 
-    if '<@!991063755939016875>' in message.content:
+    if '<@991063755939016875>' in message.content:
         timestamp = open('timestamp', 'r')
         time = timestamp.read()
         timestamp.close()
@@ -43,9 +43,9 @@ async def on_message(message):
             # 10 PM to 2 AM
             if 2 <= hour < 6:
                 msg = 'This will ping the night shift.'
-            await message.channel.send(msg)
+            await message.reply(msg)
         else:
-            await message.channel.send('Someone else pinged too recently! You can ping again in ' + str(30 - get_time_elapsed(int(time), int(minute))) + ' minutes.')
+            await message.reply('Someone else pinged too recently! You can ping again in ' + str(30 - get_time_elapsed(int(time), int(minute))) + ' minutes.')
     else:
         print(str(message.author) + ': ' + message.content)
 
