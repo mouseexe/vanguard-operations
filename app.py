@@ -1,6 +1,7 @@
 import discord
 import os
-from datetime import datetime, date
+import math
+from datetime import datetime
 
 # Token is a secret stored on okd
 TOKEN = os.environ.get('DISCORDTOKEN', 'default value')
@@ -13,7 +14,7 @@ cadence = 30
 # that was then, this is now
 def get_time_elapsed(that, this):
     delta = this - that
-    return delta.total_seconds() / 60
+    return math.ceil(delta.total_seconds() / 60)
 
 
 def write(message):
