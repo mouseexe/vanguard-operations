@@ -50,7 +50,7 @@ async def on_message(message):
 
         if time == '' or time == 'override' or get_time_elapsed(then, now) >= cadence:
             # write here, write now
-            write(now)
+            write(str(now))
             if (day == 4 and hour >= 21) or 4 < day <= 6 or (day == 0 and hour <= 2):
                 # This is the ID for Weekend
                 msg = '<@&991109494253822012>'
