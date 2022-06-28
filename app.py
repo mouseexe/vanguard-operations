@@ -14,7 +14,7 @@ cadence = 30
 # that was then, this is now
 def get_time_elapsed(that, this):
     delta = this - that
-    return math.ceil(delta.total_seconds() / 60)
+    return math.floor(delta.total_seconds() / 60)
 
 
 def write(message):
