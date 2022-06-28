@@ -42,7 +42,7 @@ async def on_message(message):
 
         then = datetime.now()
         if time != '' and time != 'override':
-            then = datetime.fromisoformat(time)
+            then = datetime.fromisoformat(str(time))
         now = datetime.now()
         hour = int(datetime.now().strftime('%H'))
         day = datetime.now().weekday()
