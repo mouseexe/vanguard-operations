@@ -1,6 +1,6 @@
 import discord
 import os
-from datetime import datetime
+from datetime import datetime, date
 
 # Token is a secret stored on okd
 TOKEN = os.environ.get('DISCORDTOKEN', 'default value')
@@ -42,7 +42,7 @@ async def on_message(message):
 
         then = datetime.now()
         if time != '' and time != 'override':
-            then = datetime.fromisoformat(time)
+            then = date.fromisoformat(time)
         now = datetime.now()
         hour = int(datetime.now().strftime('%H'))
         day = datetime.now().weekday()
