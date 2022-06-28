@@ -75,8 +75,8 @@ async def on_message(message):
             await message.reply(msg)
         else:
             await message.reply('Ping available in ' + str(cadence - get_time_elapsed(then, now)) + ' minutes.')
-    else:
-        print(str(message.author) + ': ' + message.content)
+    # else:
+        # print(str(message.author) + ': ' + message.content)
 
 
 @client.event
