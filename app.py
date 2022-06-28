@@ -10,10 +10,10 @@ client = discord.Client()
 cadence = 30
 
 
-def get_time_elapsed(time, now):
-    if now >= time:
-        return now - time
-    return (now + 60) - time
+# that was then, this is now
+def get_time_elapsed(that, this):
+    delta = this - that
+    return delta.total_seconds() / 60
 
 
 def write(message):
@@ -35,15 +35,22 @@ async def on_message(message):
 
     # This is the ID for the Vanguard Operations bot
     if '<@991063755939016875>' in message.content:
+        # Read timestamp file for last ping time
         timestamp = open('timestamp', 'r')
         time = timestamp.read()
         timestamp.close()
-        minute = datetime.now().strftime('%M')
+
+        then = datetime.now()
+        if time != '' and time != 'override':
+            then = datetime.fromisoformat(time)
+        now = datetime.now()
         hour = int(datetime.now().strftime('%H'))
         day = datetime.now().weekday()
         msg = ''
-        if time == '' or time == 'override' or get_time_elapsed(int(time), int(minute)) >= cadence:
-            write(minute)
+
+        if time == '' or time == 'override' or get_time_elapsed(then, now) >= cadence:
+            # write here, write now
+            write(now)
             if (day == 4 and hour >= 21) or 4 < day <= 6 or (day == 0 and hour <= 2):
                 # This is the ID for Weekend
                 msg = '<@&991109494253822012>'
@@ -66,7 +73,7 @@ async def on_message(message):
                 msg = '<@&991090429342679110>'
             await message.reply(msg)
         else:
-            await message.reply('Ping available in ' + str(cadence - get_time_elapsed(int(time), int(minute))) + ' minutes.')
+            await message.reply('Ping available in ' + str(cadence - get_time_elapsed(then, now)) + ' minutes.')
     else:
         print(str(message.author) + ': ' + message.content)
 
