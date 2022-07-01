@@ -9,16 +9,18 @@ TOKEN = os.environ.get('DISCORDTOKEN', 'default value')
 
 client = discord.Client()
 
+# Personal cooldown is 2 hours, global cooldown is 10 minutes
 global_cadence = 10
 user_cadence = 120
 
 
-# that was then, this is now
-def get_time_elapsed(that, this):
-    delta = this - that
+# Helper method to calculate time elapsed delta
+def get_time_elapsed(old_time, new_time):
+    delta = new_time - old_time
     return math.floor(delta.total_seconds() / 60)
 
 
+# Helper method to write to specified file
 def write(file, message):
     timestamp = open(file, 'w')
     timestamp.write(message)
@@ -44,6 +46,7 @@ async def on_message(message):
             time = timestamp.read()
             timestamp.close()
         except:
+            # Create file and populate if it doesn't exist
             write('timestamp', '')
             time = ''
 
@@ -53,26 +56,31 @@ async def on_message(message):
             usertime = userstamp.read()
             userstamp.close()
         except:
+            # Create file and populate if it doesn't exist
             write(str(message.author), '')
             usertime = ''
 
+        # Set time if global file is not empty or override
         then = datetime.now()
         if time != '' and time != 'override':
             then = datetime.fromisoformat(str(time))
 
+        # Set time if user file is not empty
         userthen = datetime.now()
-        if usertime != '' and time != 'override':
+        if usertime != '':
             userthen = datetime.fromisoformat(str(usertime))
 
+        # If message contains a timestamp, use that instead of the current time
         if '<t:' in message.content:
             now = datetime.fromtimestamp(int(re.search('<t:.{10}>', message.content).group(0)[3:13]))
         else:
+            # Otherwise just use the current time
             now = datetime.now()
         hour = int(now.strftime('%H'))
         day = now.weekday()
         msg = ''
 
-        if time == '' or time == 'override' or (get_time_elapsed(then, now) >= global_cadence and get_time_elapsed(userthen, now) >= user_cadence):
+        if time == '' or time == 'override' or (get_time_elapsed(then, now) >= global_cadence and (usertime == '' or get_time_elapsed(userthen, now) >= user_cadence)):
             # write here, write now
             write('timestamp', str(now))
             write(str(message.author), str(now))
