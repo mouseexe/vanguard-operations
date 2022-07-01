@@ -44,7 +44,7 @@ async def on_message(message):
         timestamp.close()
 
         # read timestamp file for the last user ping
-        userstamp = open(message.author, 'r')
+        userstamp = open(str(message.author), 'r')
         usertime = userstamp.read()
         userstamp.close()
 
@@ -67,7 +67,7 @@ async def on_message(message):
         if time == '' or time == 'override' or (get_time_elapsed(then, now) >= global_cadence and get_time_elapsed(userthen, now) >= user_cadence):
             # write here, write now
             write('timestamp', str(now))
-            write(message.author, str(now))
+            write(str(message.author), str(now))
             if (day == 4 and hour >= 21) or 4 < day <= 6 or (day == 0 and hour <= 2):
                 # This is the ID for Weekend
                 # msg = '<@&991109494253822012>'
