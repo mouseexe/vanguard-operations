@@ -45,6 +45,7 @@ async def on_message(message):
             timestamp.close()
         except:
             write('timestamp', '')
+            time = ''
 
         try:
             # read timestamp file for the last user ping
@@ -53,6 +54,7 @@ async def on_message(message):
             userstamp.close()
         except:
             write(str(message.author), '')
+            usertime = ''
 
         then = datetime.now()
         if time != '' and time != 'override':
