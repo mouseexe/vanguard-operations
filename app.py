@@ -39,12 +39,12 @@ async def on_message(message):
     # This is the ID for the Vanguard Operations bot
     if '<@991063755939016875>' in message.content:
         # Read timestamp file for last ping time
-        timestamp = open('timestamp', 'r')
+        timestamp = open('timestamp', 'rw')
         time = timestamp.read()
         timestamp.close()
 
         # read timestamp file for the last user ping
-        userstamp = open(str(message.author), 'r')
+        userstamp = open(str(message.author), 'rw')
         usertime = userstamp.read()
         userstamp.close()
 
