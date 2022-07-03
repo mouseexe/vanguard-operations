@@ -64,12 +64,12 @@ async def on_message(message):
             usertime = ''
 
         # Set time if global file is not empty or override
-        then = datetime.now()
+        then = datetime.fromtimestamp(0)
         if time != '' and time != 'override':
             then = datetime.fromisoformat(str(time))
 
         # Set time if user file is not empty
-        userthen = datetime.now()
+        userthen = datetime.fromtimestamp(0)
         if usertime != '':
             userthen = datetime.fromisoformat(str(usertime))
 
