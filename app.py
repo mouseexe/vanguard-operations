@@ -90,31 +90,32 @@ async def on_message(message):
 
             # times seem to be four hours ahead because of UTC
             # Monday = 0, Sunday = 6
+            # Bot will send back the original message, with the bot ping replaced with the relevant timezone ping
             # Check if weekend before setting any other pings
             if (day == 4 and hour >= 21) or 4 < day <= 6 or (day == 0 and hour <= 2):
                 # This is the ID for Weekend
-                msg = '<@&991109494253822012>'
+                msg = message.content.replace('<@991063755939016875>', '<@&991109494253822012>')
                 # msg = 'weekend'
             else:
                 # 2 AM to 8 AM
                 if 6 <= hour < 12:
                     # This is the ID for Morning (2 AM - 8 AM)
-                    msg = '<@&991090248433950803>'
+                    msg = message.content.replace('<@991063755939016875>', '<@&991090248433950803>')
                     # msg = 'morning'
                 # 8 AM to 5 PM
                 if 12 <= hour < 21:
                     # This is the ID for Day (8 AM - 5 PM)
-                    msg = '<@&991090325894336542>'
+                    msg = message.content.replace('<@991063755939016875>', '<@&991090325894336542>')
                     # msg = 'day'
                 # 5 PM to 10 PM
                 if 21 <= hour < 24 or 0 <= hour < 2:
                     # This is the ID for Evening (5 PM - 10 PM)
-                    msg = '<@&991090361369784360>'
+                    msg = message.content.replace('<@991063755939016875>', '<@&991090361369784360>')
                     # msg = 'evening'
                 # 10 PM to 2 AM
                 if 2 <= hour < 6:
                     # This is the ID for Night (10 PM - 2 AM)
-                    msg = '<@&991090429342679110>'
+                    msg = message.content.replace('<@991063755939016875>', '<@&991090429342679110>')
                     # msg = 'night'
             await message.reply(msg)
         else:
