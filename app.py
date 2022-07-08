@@ -41,6 +41,14 @@ async def on_message(message):
         write('timestamp', 'override')
         await message.add_reaction('✔')
 
+    # vote lift (just admin use for now)
+    if message.content == '/votelift' and message.author.guild_permissions.administrator:
+        id = int(re.search('<@.{18}>', message.content).group(0)[2:20])
+        lifted = client.get_user(id)
+        afk_channel = client.get_channel(878743239199424532)
+        await lifted.move_to(afk_channel)
+        await message.add_reaction('✔')
+
     # This is the ID for the Vanguard Operations bot
     if '<@991063755939016875>' in message.content:
         try:
