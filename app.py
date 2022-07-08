@@ -44,7 +44,7 @@ async def on_message(message):
     # vote lift (just admin use for now)
     if '/votelift' in message.content and message.author.guild_permissions.administrator:
         lifted_id = int(re.search('<@.{18}>', message.content).group(0)[2:20])
-        lifted = message.guild.get_member(lifted_id)
+        lifted = await message.guild.fetch_member(lifted_id)
         afk_channel = client.get_channel(878743239199424532)
         await lifted.move_to(afk_channel)
         await message.add_reaction('✔')
