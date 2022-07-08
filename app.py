@@ -8,7 +8,6 @@ from datetime import datetime
 TOKEN = os.environ.get('DISCORDTOKEN', 'default value')
 
 client = discord.Client()
-guild = client.get_guild(141388545863581697)
 
 # Personal cooldown is 2 hours, global cooldown is 10 minutes
 global_cadence = 10
@@ -45,7 +44,7 @@ async def on_message(message):
     # vote lift (just admin use for now)
     if '/votelift' in message.content and message.author.guild_permissions.administrator:
         lifted_id = int(re.search('<@.{18}>', message.content).group(0)[2:20])
-        lifted = guild.get_member(lifted_id)
+        lifted = message.guild.get_member(lifted_id)
         afk_channel = client.get_channel(878743239199424532)
         await lifted.move_to(afk_channel)
         await message.add_reaction('✔')
