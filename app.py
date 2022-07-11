@@ -133,6 +133,7 @@ async def on_message(message):
 async def on_reaction_add(reaction, user):
     # If the reaction is on a votelift message, and it hits 5 votes total (4 + bot reaction), lift and clear reactions
     if '/votelift' in reaction.message.content and reaction.emoji == '🗳️' and reaction.count >= 5 and '🛗' not in reaction.message.reactions:
+        print(reaction.message.reactions)
         lifted_id = int(re.search('<@.{18}>', reaction.message.content).group(0)[2:20])
         lifted = await reaction.message.guild.fetch_member(lifted_id)
         afk_channel = client.get_channel(878743239199424532)
