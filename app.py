@@ -41,13 +41,9 @@ async def on_message(message):
         write('timestamp', 'override')
         await message.add_reaction('✔')
 
-    # vote lift (just admin use for now)
-    if '/votelift' in message.content and message.author.guild_permissions.administrator:
-        lifted_id = int(re.search('<@.{18}>', message.content).group(0)[2:20])
-        lifted = await message.guild.fetch_member(lifted_id)
-        afk_channel = client.get_channel(878743239199424532)
-        await lifted.move_to(afk_channel)
-        await message.add_reaction('✔')
+    # vote lift reaction start (only works if message contains /votelift and a user to lift
+    if '/votelift' in message.content and bool(re.search('<@.{18}>', message.content)):
+        await message.add_reaction('🗳️')
 
     # This is the ID for the Vanguard Operations bot
     if '<@991063755939016875>' in message.content:
@@ -132,6 +128,16 @@ async def on_message(message):
         # log only on failure
         # print(str(message.author) + ': ' + message.content)
 
+
+@client.event
+async def on_reaction_add(reaction, user):
+    # If the reaction is on a votelift message, and it hits 5 votes total (4 + bot reaction), lift and clear reactions
+    if '/votelift' in reaction.message.content and reaction.emoji == '🗳️' and reaction.count >= 5:
+        lifted_id = int(re.search('<@.{18}>', reaction.message.content).group(0)[2:20])
+        lifted = await reaction.message.guild.fetch_member(lifted_id)
+        afk_channel = client.get_channel(878743239199424532)
+        await lifted.move_to(afk_channel)
+        await reaction.message.clear_reaction('🗳️')
 
 @client.event
 async def on_ready():
