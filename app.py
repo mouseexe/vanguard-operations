@@ -9,9 +9,13 @@ TOKEN = os.environ.get('DISCORDTOKEN', 'default value')
 
 client = discord.Client()
 
-# Personal cooldown is 2 hours, global cooldown is 10 minutes
+# Personal cooldown is X minutes, global cooldown is Y minutes
 global_cadence = 10
 user_cadence = 120
+
+# X votes needed to lift, must be done in & minutes
+votes = 2
+vote_expiration = 2
 
 
 # Helper method to calculate time elapsed delta
@@ -139,17 +143,29 @@ async def on_message(message):
 
 @client.event
 async def on_reaction_add(reaction, user):
+
+    # you only have five minutes to get the votes
+    if get_time_elapsed(reaction.message.created_at, datetime.now()) > vote_expiration:
+        # clear votes
+        await reaction.message.clear_reaction('🗳️')
+        # show vote failed emoji
+        await reaction.message.add_reaction('❌')
+
     # If the reaction is on a votelift message, and it hits 5 votes total (4 + bot reaction), lift and clear reactions
-    if '/votelift' in reaction.message.content and reaction.emoji == '🗳️' and reaction.count >= 5 and is_liftable(reaction.message.reactions):
+    if '/votelift' in reaction.message.content and reaction.emoji == '🗳️' and reaction.count >= votes and is_liftable(reaction.message.reactions):
         lifted_id = int(re.search('<@.{18}>', reaction.message.content).group(0)[2:20])
         lifted = await reaction.message.guild.fetch_member(lifted_id)
         afk_channel = client.get_channel(878743239199424532)
         await lifted.move_to(afk_channel)
+        # remove all votes
         await reaction.message.clear_reaction('🗳️')
+        # add angel to signify lifting has occurred
         await reaction.message.add_reaction('👼')
 
+    # don't allow people to react with angel before lifting occurs
     if '/votelift' in reaction.message.content and reaction.emoji == '👼' and user != client.user:
         await reaction.remove(user)
+
 
 @client.event
 async def on_ready():
