@@ -13,8 +13,8 @@ client = discord.Client()
 global_cadence = 10
 user_cadence = 120
 
-# X votes needed to lift, must be done in & minutes
-votes = 2
+# X votes needed to lift, must be done in Y minutes
+votes = 6
 vote_expiration = 2
 
 
@@ -144,14 +144,15 @@ async def on_message(message):
 @client.event
 async def on_reaction_add(reaction, user):
 
-    # you only have five minutes to get the votes
+    # you only have X minutes to get the votes
     if get_time_elapsed(reaction.message.created_at, datetime.now()) > vote_expiration:
         # clear votes
         await reaction.message.clear_reaction('🗳️')
         # show vote failed emoji
         await reaction.message.add_reaction('❌')
+        return
 
-    # If the reaction is on a votelift message, and it hits 5 votes total (4 + bot reaction), lift and clear reactions
+    # If the reaction is on a votelift message, and it hits X votes total (bot reaction included), lift and clear reactions
     if '/votelift' in reaction.message.content and reaction.emoji == '🗳️' and reaction.count >= votes and is_liftable(reaction.message.reactions):
         lifted_id = int(re.search('<@.{18}>', reaction.message.content).group(0)[2:20])
         lifted = await reaction.message.guild.fetch_member(lifted_id)
