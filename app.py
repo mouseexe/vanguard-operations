@@ -143,9 +143,8 @@ async def on_message(message):
 
 @client.event
 async def on_reaction_add(reaction, user):
-
     # you only have X minutes to get the votes
-    if get_time_elapsed(reaction.message.created_at, datetime.now()) > vote_expiration:
+    if '/votelift' in reaction.message.content and get_time_elapsed(reaction.message.created_at, datetime.now()) > vote_expiration:
         # clear votes
         await reaction.message.clear_reaction('🗳️')
         # show vote failed emoji
@@ -164,7 +163,7 @@ async def on_reaction_add(reaction, user):
         await reaction.message.add_reaction('👼')
 
     # don't allow people to react with angel before lifting occurs
-    if '/votelift' in reaction.message.content and reaction.emoji == '👼' and user != client.user:
+    if '/votelift' in reaction.message.content and is_liftable(reaction.message.reactions) and reaction.emoji == '👼' and user != client.user:
         await reaction.remove(user)
 
 
