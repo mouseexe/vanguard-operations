@@ -150,7 +150,7 @@ async def on_message(message):
                 if timeslot == 'night':
                     # This is the ID for Night (10 PM - 2 AM)
                     msg = message.content.replace('<@991063755939016875>', '<@&991090429342679110>')
-            msg = message.content.replace('<@991063755939016875>', timeslot)
+            # msg = message.content.replace('<@991063755939016875>', timeslot)
             await message.reply(msg)
         else:
             await message.reply('Ping available in ' + str(max((global_cadence - get_time_elapsed(then, now)), (user_cadence - get_time_elapsed(userthen, now)))) + ' minutes.')
