@@ -76,7 +76,7 @@ async def on_message(message):
     # reset clock if admin wants to
     if '/reset' in message.content and message.author.guild_permissions.administrator:
         readfile = message.content[7:len(message.content)]
-        write(readfile, '')
+        write(readfile, str(datetime.fromtimestamp(0)))
         await message.add_reaction('✔')
 
     if '/read' in message.content and message.author.guild_permissions.administrator:
@@ -108,7 +108,7 @@ async def on_message(message):
             timestamp.close()
         except:
             # Create file and populate if it doesn't exist
-            write(timeslot, '')
+            write(timeslot, str(datetime.fromtimestamp(0)))
             time = datetime.fromtimestamp(0)
 
         try:
@@ -118,7 +118,7 @@ async def on_message(message):
             userstamp.close()
         except:
             # Create file and populate if it doesn't exist
-            write(str(message.author), '')
+            write(str(message.author), str(datetime.fromtimestamp(0)))
             usertime = datetime.fromtimestamp(0)
 
         then = datetime.fromisoformat(str(time))
