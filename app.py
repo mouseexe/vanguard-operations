@@ -75,11 +75,8 @@ async def on_message(message):
 
     # reset clock if admin wants to
     if message.content == '/reset' and message.author.guild_permissions.administrator:
-        write('weekend', 'override')
-        write('morning', 'override')
-        write('day', 'override')
-        write('evening', 'override')
-        write('night', 'override')
+        readfile = message.content[7:len(message.content)]
+        write(readfile, '')
         await message.add_reaction('✔')
 
     if '/read' in message.content and message.author.guild_permissions.administrator:
@@ -112,7 +109,7 @@ async def on_message(message):
         except:
             # Create file and populate if it doesn't exist
             write(timeslot, '')
-            time = ''
+            time = datetime.fromtimestamp(0)
 
         try:
             # read timestamp file for the last user ping
@@ -122,19 +119,12 @@ async def on_message(message):
         except:
             # Create file and populate if it doesn't exist
             write(str(message.author), '')
-            usertime = ''
+            usertime = datetime.fromtimestamp(0)
 
-        # Set time if global file is not empty or override
-        then = datetime.fromtimestamp(0)
-        if time != '' and time != 'override':
-            then = datetime.fromisoformat(str(time))
+        then = datetime.fromisoformat(str(time))
+        userthen = datetime.fromisoformat(str(usertime))
 
-        # Set time if user file is not empty
-        userthen = datetime.fromtimestamp(0)
-        if usertime != '':
-            userthen = datetime.fromisoformat(str(usertime))
-
-        if time == '' or time == 'override' or (get_time_elapsed(then, now) >= global_cadence and (usertime == '' or get_time_elapsed(userthen, now) >= user_cadence)):
+        if get_time_elapsed(then, now) >= global_cadence and get_time_elapsed(userthen, now) >= user_cadence:
             # write here, write now
             write(timeslot, str(now))
             write(str(message.author), str(now))
@@ -160,7 +150,7 @@ async def on_message(message):
                 if timeslot == 'night':
                     # This is the ID for Night (10 PM - 2 AM)
                     msg = message.content.replace('<@991063755939016875>', '<@&991090429342679110>')
-            msg = timeslot
+            msg = message.content.replace('<@991063755939016875>', timeslot)
             await message.reply(msg)
         else:
             await message.reply('Ping available in ' + str(max((global_cadence - get_time_elapsed(then, now)), (user_cadence - get_time_elapsed(userthen, now)))) + ' minutes.')
