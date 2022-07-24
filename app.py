@@ -83,7 +83,7 @@ async def on_message(message):
         await message.add_reaction('✔')
 
     if '/read' in message.content and message.author.guild_permissions.administrator:
-        readfile = message.content[5:message.content.len]
+        readfile = message.content[5:message.content.len()]
         timefile = open(readfile, 'r')
         read = timefile.read()
         timefile.close()
