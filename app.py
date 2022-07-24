@@ -74,7 +74,7 @@ async def on_message(message):
     # print(str(message.author) + ': ' + message.content)
 
     # reset clock if admin wants to
-    if message.content == '/reset' and message.author.guild_permissions.administrator:
+    if '/reset' in message.content and message.author.guild_permissions.administrator:
         readfile = message.content[7:len(message.content)]
         write(readfile, '')
         await message.add_reaction('✔')
