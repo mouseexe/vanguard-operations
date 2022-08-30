@@ -64,7 +64,7 @@ def get_timeslot(time):
             return 'night'
 
 
-def create_message(timeslot, message, now, msg, admin_pinged):
+async def create_message(timeslot, message, now, msg, admin_pinged):
     try:
         # Read timestamp file for last ping time
         timestamp = open(timeslot, 'r')
