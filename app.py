@@ -64,6 +64,41 @@ def get_timeslot(time):
             return 'night'
 
 
+def create_message(timeslot, message, now, msg, admin_pinged):
+    try:
+        # Read timestamp file for last ping time
+        timestamp = open(timeslot, 'r')
+        time = timestamp.read()
+        timestamp.close()
+    except:
+        # Create file and populate if it doesn't exist
+        write(timeslot, str(datetime.fromtimestamp(0)))
+        time = datetime.fromtimestamp(0)
+
+    try:
+        # read timestamp file for the last user ping
+        userstamp = open(str(message.author), 'r')
+        usertime = userstamp.read()
+        userstamp.close()
+    except:
+        # Create file and populate if it doesn't exist
+        write(str(message.author), str(datetime.fromtimestamp(0)))
+        usertime = datetime.fromtimestamp(0)
+
+    then = datetime.fromisoformat(str(time))
+    userthen = datetime.fromisoformat(str(usertime))
+
+    if not admin_pinged:
+        if get_time_elapsed(then, now) >= global_cadence and get_time_elapsed(userthen, now) >= user_cadence:
+            # write here, write now
+            write(timeslot, str(now))
+            write(str(message.author), str(now))
+
+            await message.reply(msg)
+        else:
+            await message.reply('Ping available in ' + str(max((global_cadence - get_time_elapsed(then, now)), (user_cadence - get_time_elapsed(userthen, now)))) + ' minutes.')
+
+
 @client.event
 async def on_message(message):
     # we do not want the bot to reply to itself
@@ -90,9 +125,46 @@ async def on_message(message):
     if '/votelift' in message.content and bool(re.search('<@.{18}>', message.content)):
         await message.add_reaction('🗳️')
 
+    now = datetime.now()
+    admin_pinged = message.author.guild_permissions.administrator
+
+    # Ping-ahead for weekend
+    if '<@&991109494253822012>' in message.content:
+        timeslot = 'weekend'
+        msg = message.content
+        create_message(timeslot, message, now, msg, admin_pinged)
+        return
+
+    # Ping-ahead for morning
+    if '<@&991090248433950803>' in message.content:
+        timeslot = 'morning'
+        msg = message.content
+        create_message(timeslot, message, now, msg, admin_pinged)
+        return
+
+    # Ping-ahead for day
+    if '<@&991090325894336542>' in message.content:
+        timeslot = 'day'
+        msg = message.content
+        create_message(timeslot, message, now, msg, admin_pinged)
+        return
+
+    # Ping-ahead for evening
+    if '<@&991090361369784360>' in message.content:
+        timeslot = 'evening'
+        msg = message.content
+        create_message(timeslot, message, now, msg, admin_pinged)
+        return
+
+    # Ping-ahead for night
+    if '<@&991090429342679110>' in message.content:
+        timeslot = 'night'
+        msg = message.content
+        create_message(timeslot, message, now, msg, admin_pinged)
+        return
+
     # This is the ID for the Vanguard Operations bot
     if '<@991063755939016875>' in message.content:
-        now = datetime.now()
         # If message contains a timestamp, use that instead of the current time
         if '<t:' in message.content:
             time = datetime.fromtimestamp(int(re.search('<t:.{10}>', message.content).group(0)[3:13]))
@@ -101,59 +173,33 @@ async def on_message(message):
             time = now
         timeslot = get_timeslot(time)
 
-        try:
-            # Read timestamp file for last ping time
-            timestamp = open(timeslot, 'r')
-            time = timestamp.read()
-            timestamp.close()
-        except:
-            # Create file and populate if it doesn't exist
-            write(timeslot, str(datetime.fromtimestamp(0)))
-            time = datetime.fromtimestamp(0)
-
-        try:
-            # read timestamp file for the last user ping
-            userstamp = open(str(message.author), 'r')
-            usertime = userstamp.read()
-            userstamp.close()
-        except:
-            # Create file and populate if it doesn't exist
-            write(str(message.author), str(datetime.fromtimestamp(0)))
-            usertime = datetime.fromtimestamp(0)
-
-        then = datetime.fromisoformat(str(time))
-        userthen = datetime.fromisoformat(str(usertime))
-
-        if get_time_elapsed(then, now) >= global_cadence and get_time_elapsed(userthen, now) >= user_cadence:
-            # write here, write now
-            write(timeslot, str(now))
-            write(str(message.author), str(now))
-
-            msg = ''
-            if timeslot == 'weekend':
-                # This is the ID for Weekend
-                msg = message.content.replace('<@991063755939016875>', '<@&991109494253822012>')
-            else:
-                # 2 AM to 8 AM
-                if timeslot == 'morning':
-                    # This is the ID for Morning (2 AM - 8 AM)
-                    msg = message.content.replace('<@991063755939016875>', '<@&991090248433950803>')
-                # 8 AM to 5 PM
-                if timeslot == 'day':
-                    # This is the ID for Day (8 AM - 5 PM)
-                    msg = message.content.replace('<@991063755939016875>', '<@&991090325894336542>')
-                # 5 PM to 10 PM
-                if timeslot == 'evening':
-                    # This is the ID for Evening (5 PM - 10 PM)
-                    msg = message.content.replace('<@991063755939016875>', '<@&991090361369784360>')
-                # 10 PM to 2 AM
-                if timeslot == 'night':
-                    # This is the ID for Night (10 PM - 2 AM)
-                    msg = message.content.replace('<@991063755939016875>', '<@&991090429342679110>')
-            # msg = message.content.replace('<@991063755939016875>', timeslot)
-            await message.reply(msg)
+        if timeslot == 'weekend':
+            # This is the ID for Weekend
+            msg = message.content.replace('<@991063755939016875>', '<@&991109494253822012>')
         else:
-            await message.reply('Ping available in ' + str(max((global_cadence - get_time_elapsed(then, now)), (user_cadence - get_time_elapsed(userthen, now)))) + ' minutes.')
+            # 2 AM to 8 AM
+            if timeslot == 'morning':
+                # This is the ID for Morning (2 AM - 8 AM)
+                msg = message.content.replace('<@991063755939016875>', '<@&991090248433950803>')
+            # 8 AM to 5 PM
+            if timeslot == 'day':
+                # This is the ID for Day (8 AM - 5 PM)
+                msg = message.content.replace('<@991063755939016875>', '<@&991090325894336542>')
+            # 5 PM to 10 PM
+            if timeslot == 'evening':
+                # This is the ID for Evening (5 PM - 10 PM)
+                msg = message.content.replace('<@991063755939016875>', '<@&991090361369784360>')
+            # 10 PM to 2 AM
+            if timeslot == 'night':
+                # This is the ID for Night (10 PM - 2 AM)
+                msg = message.content.replace('<@991063755939016875>', '<@&991090429342679110>')
+            else:
+                msg = message.content
+        # msg = message.content.replace('<@991063755939016875>', timeslot)
+
+        create_message(timeslot, message, now, msg, False)
+        return
+
     # else:
         # log only on failure
         # print(str(message.author) + ': ' + message.content)
