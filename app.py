@@ -132,35 +132,35 @@ async def on_message(message):
     if '<@&991109494253822012>' in message.content:
         timeslot = 'weekend'
         msg = message.content
-        create_message(timeslot, message, now, msg, admin_pinged)
+        await create_message(timeslot, message, now, msg, admin_pinged)
         return
 
     # Ping-ahead for morning
     if '<@&991090248433950803>' in message.content:
         timeslot = 'morning'
         msg = message.content
-        create_message(timeslot, message, now, msg, admin_pinged)
+        await create_message(timeslot, message, now, msg, admin_pinged)
         return
 
     # Ping-ahead for day
     if '<@&991090325894336542>' in message.content:
         timeslot = 'day'
         msg = message.content
-        create_message(timeslot, message, now, msg, admin_pinged)
+        await create_message(timeslot, message, now, msg, admin_pinged)
         return
 
     # Ping-ahead for evening
     if '<@&991090361369784360>' in message.content:
         timeslot = 'evening'
         msg = message.content
-        create_message(timeslot, message, now, msg, admin_pinged)
+        await create_message(timeslot, message, now, msg, admin_pinged)
         return
 
     # Ping-ahead for night
     if '<@&991090429342679110>' in message.content:
         timeslot = 'night'
         msg = message.content
-        create_message(timeslot, message, now, msg, admin_pinged)
+        await create_message(timeslot, message, now, msg, admin_pinged)
         return
 
     # This is the ID for the Vanguard Operations bot
@@ -197,7 +197,7 @@ async def on_message(message):
                 msg = message.content
         # msg = message.content.replace('<@991063755939016875>', timeslot)
 
-        create_message(timeslot, message, now, msg, False)
+        await create_message(timeslot, message, now, msg, False)
         return
 
     # else:
