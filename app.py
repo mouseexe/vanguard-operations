@@ -7,7 +7,7 @@ from datetime import datetime
 # Token is a secret stored on okd
 TOKEN = os.environ.get('DISCORDTOKEN', 'default value')
 
-client = discord.Client()
+client = discord.Client( intents = discord.Intents.default())
 
 # Personal cooldown is X minutes, global cooldown is Y minutes
 global_cadence = 10
