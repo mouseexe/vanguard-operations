@@ -116,13 +116,13 @@ async def create_message(message, timeslot, now, replacement_string):
             if timeslot == 'morning':
                 msg = message.content.replace(replacement_string, MORNING)
             # 8 AM to 5 PM
-            if timeslot == 'day':
+            elif timeslot == 'day':
                 msg = message.content.replace(replacement_string, DAY)
             # 5 PM to 10 PM
-            if timeslot == 'evening':
+            elif timeslot == 'evening':
                 msg = message.content.replace(replacement_string, EVENING)
             # 10 PM to 2 AM
-            if timeslot == 'night':
+            elif timeslot == 'night':
                 msg = message.content.replace(replacement_string, NIGHT)
             else:
                 msg = message.content
