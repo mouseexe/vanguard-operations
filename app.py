@@ -7,14 +7,14 @@ from datetime import datetime
 # Token is a secret stored on okd
 TOKEN = os.environ.get('DISCORDTOKEN', 'default value')
 
-VANGUARD_OPS =  '<@991063755939016875>'
+VANGUARD_OPS = '<@991063755939016875>'
 WEEKEND = '<@&991109494253822012>'
 MORNING = '<@&991090248433950803>'
 DAY = '<@&991090325894336542>'
 EVENING = '<@&991090361369784360>'
 NIGHT = '<@&991090429342679110>'
 
-client = discord.Client( intents = discord.Intents.default())
+client = discord.Client(intents=discord.Intents.all())
 
 # Personal cooldown is X minutes, global cooldown is Y minutes
 global_cadence = 10
