@@ -127,7 +127,7 @@ async def create_message(message, timeslot, now, replacement_string):
             else:
                 msg = message.content
         # logging catchall to stop pings
-        msg = message.content.replace(replacement_string, timeslot)
+        # msg = message.content.replace(replacement_string, timeslot)
 
         await message.reply(msg)
     else:
