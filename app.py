@@ -111,21 +111,19 @@ async def create_message(message, timeslot, now, replacement_string):
 
         if timeslot == 'weekend':
             msg = message.content.replace(replacement_string, WEEKEND)
+        elif timeslot == 'morning':
+            msg = message.content.replace(replacement_string, MORNING)
+        # 8 AM to 5 PM
+        elif timeslot == 'day':
+            msg = message.content.replace(replacement_string, DAY)
+        # 5 PM to 10 PM
+        elif timeslot == 'evening':
+            msg = message.content.replace(replacement_string, EVENING)
+        # 10 PM to 2 AM
+        elif timeslot == 'night':
+            msg = message.content.replace(replacement_string, NIGHT)
         else:
-            # 2 AM to 8 AM
-            if timeslot == 'morning':
-                msg = message.content.replace(replacement_string, MORNING)
-            # 8 AM to 5 PM
-            elif timeslot == 'day':
-                msg = message.content.replace(replacement_string, DAY)
-            # 5 PM to 10 PM
-            elif timeslot == 'evening':
-                msg = message.content.replace(replacement_string, EVENING)
-            # 10 PM to 2 AM
-            elif timeslot == 'night':
-                msg = message.content.replace(replacement_string, NIGHT)
-            else:
-                msg = message.content
+            msg = message.content
         # logging catchall to stop pings
         # msg = message.content.replace(replacement_string, timeslot)
 
