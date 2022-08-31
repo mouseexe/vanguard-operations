@@ -7,6 +7,13 @@ from datetime import datetime
 # Token is a secret stored on okd
 TOKEN = os.environ.get('DISCORDTOKEN', 'default value')
 
+VANGUARD_OPS =  '<@991063755939016875>'
+WEEKEND = '<@&991109494253822012>'
+MORNING = '<@&991090248433950803>'
+DAY = '<@&991090325894336542>'
+EVENING = '<@&991090361369784360>'
+NIGHT = '<@&991090429342679110>'
+
 client = discord.Client( intents = discord.Intents.default())
 
 # Personal cooldown is X minutes, global cooldown is Y minutes
@@ -71,7 +78,7 @@ async def on_message(message):
         return
 
     # general log statement
-    # print(str(message.author) + ': ' + message.content)
+    print(str(message.author) + ': ' + message.content)
 
     # reset clock if admin wants to
     if '/reset' in message.content and message.author.guild_permissions.administrator:
@@ -91,7 +98,7 @@ async def on_message(message):
         await message.add_reaction('🗳️')
 
     # This is the ID for the Vanguard Operations bot
-    if '<@991063755939016875>' in message.content:
+    if VANGUARD_OPS in message.content:
         now = datetime.now()
         # If message contains a timestamp, use that instead of the current time
         if '<t:' in message.content:
@@ -131,26 +138,21 @@ async def on_message(message):
 
             msg = ''
             if timeslot == 'weekend':
-                # This is the ID for Weekend
-                msg = message.content.replace('<@991063755939016875>', '<@&991109494253822012>')
+                msg = message.content.replace(VANGUARD_OPS, WEEKEND)
             else:
                 # 2 AM to 8 AM
                 if timeslot == 'morning':
-                    # This is the ID for Morning (2 AM - 8 AM)
-                    msg = message.content.replace('<@991063755939016875>', '<@&991090248433950803>')
+                    msg = message.content.replace(VANGUARD_OPS, MORNING)
                 # 8 AM to 5 PM
                 if timeslot == 'day':
-                    # This is the ID for Day (8 AM - 5 PM)
-                    msg = message.content.replace('<@991063755939016875>', '<@&991090325894336542>')
+                    msg = message.content.replace(VANGUARD_OPS, DAY)
                 # 5 PM to 10 PM
                 if timeslot == 'evening':
-                    # This is the ID for Evening (5 PM - 10 PM)
-                    msg = message.content.replace('<@991063755939016875>', '<@&991090361369784360>')
+                    msg = message.content.replace(VANGUARD_OPS, EVENING)
                 # 10 PM to 2 AM
                 if timeslot == 'night':
-                    # This is the ID for Night (10 PM - 2 AM)
-                    msg = message.content.replace('<@991063755939016875>', '<@&991090429342679110>')
-            # msg = message.content.replace('<@991063755939016875>', timeslot)
+                    msg = message.content.replace(VANGUARD_OPS, NIGHT)
+            msg = message.content.replace(VANGUARD_OPS, timeslot)
             await message.reply(msg)
         else:
             await message.reply('Ping available in ' + str(max((global_cadence - get_time_elapsed(then, now)), (user_cadence - get_time_elapsed(userthen, now)))) + ' minutes.')
