@@ -8,11 +8,20 @@ from datetime import datetime
 TOKEN = os.environ.get('DISCORDTOKEN', 'default value')
 
 VANGUARD_OPS = '<@991063755939016875>'
+
+# Bot will ping:
 WEEKEND = '<@&991109494253822012>'
 MORNING = '<@&991090248433950803>'
 DAY = '<@&991090325894336542>'
 EVENING = '<@&991090361369784360>'
 NIGHT = '<@&991090429342679110>'
+
+# Users can ping:
+WEEKEND_PING = '<@&1014641471724470423>'
+MORNING_PING = '<@&1014641233924214874>'
+DAY_PING = '<@&1014641312919720046>'
+EVENING_PING = '<@&1014641367584084028>'
+NIGHT_PING = '<@&1014641419849302189>'
 
 client = discord.Client(intents=discord.Intents.all())
 
@@ -71,6 +80,61 @@ def get_timeslot(time):
             return 'night'
 
 
+async def create_message(message, timeslot, now, replacement_string):
+    try:
+        # Read timestamp file for last ping time
+        timestamp = open(timeslot, 'r')
+        time = timestamp.read()
+        timestamp.close()
+    except:
+        # Create file and populate if it doesn't exist
+        write(timeslot, str(datetime.fromtimestamp(0)))
+        time = datetime.fromtimestamp(0)
+
+    try:
+        # read timestamp file for the last user ping
+        userstamp = open(str(message.author), 'r')
+        usertime = userstamp.read()
+        userstamp.close()
+    except:
+        # Create file and populate if it doesn't exist
+        write(str(message.author), str(datetime.fromtimestamp(0)))
+        usertime = datetime.fromtimestamp(0)
+
+    then = datetime.fromisoformat(str(time))
+    userthen = datetime.fromisoformat(str(usertime))
+
+    if get_time_elapsed(then, now) >= global_cadence and get_time_elapsed(userthen, now) >= user_cadence:
+        # write here, write now
+        write(timeslot, str(now))
+        write(str(message.author), str(now))
+
+        if timeslot == 'weekend':
+            msg = message.content.replace(replacement_string, WEEKEND)
+        else:
+            # 2 AM to 8 AM
+            if timeslot == 'morning':
+                msg = message.content.replace(replacement_string, MORNING)
+            # 8 AM to 5 PM
+            if timeslot == 'day':
+                msg = message.content.replace(replacement_string, DAY)
+            # 5 PM to 10 PM
+            if timeslot == 'evening':
+                msg = message.content.replace(replacement_string, EVENING)
+            # 10 PM to 2 AM
+            if timeslot == 'night':
+                msg = message.content.replace(replacement_string, NIGHT)
+            else:
+                msg = message.content
+        # logging catchall to stop pings
+        msg = message.content.replace(replacement_string, timeslot)
+
+        await message.reply(msg)
+    else:
+        await message.reply('Ping available in ' + str(max((global_cadence - get_time_elapsed(then, now)), (user_cadence - get_time_elapsed(userthen, now)))) + ' minutes.')
+    return
+
+
 @client.event
 async def on_message(message):
     # we do not want the bot to reply to itself
@@ -78,7 +142,9 @@ async def on_message(message):
         return
 
     # general log statement
-    print(str(message.author) + ': ' + message.content)
+    # print(str(message.author) + ': ' + message.content)
+
+    now = datetime.now()
 
     # reset clock if admin wants to
     if '/reset' in message.content and message.author.guild_permissions.administrator:
@@ -97,65 +163,25 @@ async def on_message(message):
     if '/votelift' in message.content and bool(re.search('<@.{18}>', message.content)):
         await message.add_reaction('🗳️')
 
-    # This is the ID for the Vanguard Operations bot
-    if VANGUARD_OPS in message.content:
-        now = datetime.now()
+    if WEEKEND_PING in message.content:
+        await create_message(message, 'weekend', now, WEEKEND_PING)
+    elif MORNING_PING in message.content:
+        await create_message(message, 'morning', now, MORNING_PING)
+    elif DAY_PING in message.content:
+        await create_message(message, 'day', now, DAY_PING)
+    elif EVENING_PING in message.content:
+        await create_message(message, 'evening', now, EVENING_PING)
+    elif NIGHT_PING in message.content:
+        await create_message(message, 'night', now, NIGHT_PING)
+    elif VANGUARD_OPS in message.content:
         # If message contains a timestamp, use that instead of the current time
         if '<t:' in message.content:
-            time = datetime.fromtimestamp(int(re.search('<t:.{10}>', message.content).group(0)[3:13]))
+            time = datetime.fromtimestamp(int(re.search('<t:.{10}(:t)?>', message.content).group(0)[3:13]))
         else:
             # Otherwise just use the current time
             time = now
-        timeslot = get_timeslot(time)
+        await create_message(message, get_timeslot(time), now, VANGUARD_OPS)
 
-        try:
-            # Read timestamp file for last ping time
-            timestamp = open(timeslot, 'r')
-            time = timestamp.read()
-            timestamp.close()
-        except:
-            # Create file and populate if it doesn't exist
-            write(timeslot, str(datetime.fromtimestamp(0)))
-            time = datetime.fromtimestamp(0)
-
-        try:
-            # read timestamp file for the last user ping
-            userstamp = open(str(message.author), 'r')
-            usertime = userstamp.read()
-            userstamp.close()
-        except:
-            # Create file and populate if it doesn't exist
-            write(str(message.author), str(datetime.fromtimestamp(0)))
-            usertime = datetime.fromtimestamp(0)
-
-        then = datetime.fromisoformat(str(time))
-        userthen = datetime.fromisoformat(str(usertime))
-
-        if get_time_elapsed(then, now) >= global_cadence and get_time_elapsed(userthen, now) >= user_cadence:
-            # write here, write now
-            write(timeslot, str(now))
-            write(str(message.author), str(now))
-
-            msg = ''
-            if timeslot == 'weekend':
-                msg = message.content.replace(VANGUARD_OPS, WEEKEND)
-            else:
-                # 2 AM to 8 AM
-                if timeslot == 'morning':
-                    msg = message.content.replace(VANGUARD_OPS, MORNING)
-                # 8 AM to 5 PM
-                if timeslot == 'day':
-                    msg = message.content.replace(VANGUARD_OPS, DAY)
-                # 5 PM to 10 PM
-                if timeslot == 'evening':
-                    msg = message.content.replace(VANGUARD_OPS, EVENING)
-                # 10 PM to 2 AM
-                if timeslot == 'night':
-                    msg = message.content.replace(VANGUARD_OPS, NIGHT)
-            msg = message.content.replace(VANGUARD_OPS, timeslot)
-            await message.reply(msg)
-        else:
-            await message.reply('Ping available in ' + str(max((global_cadence - get_time_elapsed(then, now)), (user_cadence - get_time_elapsed(userthen, now)))) + ' minutes.')
     # else:
         # log only on failure
         # print(str(message.author) + ': ' + message.content)
@@ -173,7 +199,7 @@ async def on_reaction_add(reaction, user):
                 await reaction.message.add_reaction('❌')
                 return
 
-            # If the reaction is on a votelift message, and it hits X votes total (bot reaction included), lift and clear reactions
+            # If the reaction is on a votelift message, and it hits X votes total (w/ bot), lift and clear reactions
             if reaction.count >= votes:
                 lifted_id = int(re.search('<@.{18}>', reaction.message.content).group(0)[2:20])
                 lifted = await reaction.message.guild.fetch_member(lifted_id)
