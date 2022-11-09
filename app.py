@@ -59,24 +59,24 @@ def get_timeslot(time):
     hour = int(time.strftime('%H'))
     day = time.weekday()
 
-    # times seem to be four hours ahead because of UTC
+    # times seem to be four hours (five hours during standard time) ahead because of UTC
     # Monday = 0, Sunday = 6
     # Bot will send back the original message, with the bot ping replaced with the relevant timezone ping
     # Check if weekend before setting any other pings
-    if (day == 4 and hour >= 21) or 4 < day <= 6 or (day == 0 and hour <= 2):
+    if (day == 4 and hour >= 22) or 4 < day <= 6 or (day == 0 and hour <= 3):
         return 'weekend'
     else:
         # 2 AM to 8 AM
-        if 6 <= hour < 12:
+        if 7 <= hour < 13:
             return 'morning'
         # 8 AM to 5 PM
-        if 12 <= hour < 21:
+        if 13 <= hour < 22:
             return 'day'
         # 5 PM to 10 PM
-        if 21 <= hour < 24 or 0 <= hour < 2:
+        if 22 <= hour < 24 or 0 <= hour < 3:
             return 'evening'
         # 10 PM to 2 AM
-        if 2 <= hour < 6:
+        if 3 <= hour < 7:
             return 'night'
 
 
