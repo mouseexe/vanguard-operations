@@ -56,27 +56,34 @@ def is_liftable(reactions):
 
 
 def get_timeslot(time):
+    # Adjust this whenever Daylight Savings starts or ends
+
+    # Daylight
+    time = datetime.fromtimestamp(time.timestamp() - 14400)
+
+    # Standard
+    # time = datetime.fromtimestamp(time.timestamp() - 18000)
+
     hour = int(time.strftime('%H'))
     day = time.weekday()
 
-    # times seem to be four hours (five hours during standard time) ahead because of UTC
     # Monday = 0, Sunday = 6
     # Bot will send back the original message, with the bot ping replaced with the relevant timezone ping
     # Check if weekend before setting any other pings
-    if (day == 4 and hour >= 22) or 4 < day <= 6 or (day == 0 and hour <= 3):
+    if (day == 4 and hour >= 17) or 4 < day < 6 or (day == 6 and hour < 22):
         return 'weekend'
     else:
         # 2 AM to 8 AM
-        if 7 <= hour < 13:
+        if 2 <= hour < 8:
             return 'morning'
         # 8 AM to 5 PM
-        if 13 <= hour < 22:
+        elif 8 <= hour < 17:
             return 'day'
         # 5 PM to 10 PM
-        if 22 <= hour < 24 or 0 <= hour < 3:
+        elif 17 <= hour < 22:
             return 'evening'
         # 10 PM to 2 AM
-        if 3 <= hour < 7:
+        else:
             return 'night'
 
 
