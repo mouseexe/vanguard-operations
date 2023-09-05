@@ -15,6 +15,7 @@ MORNING = '<@&991090248433950803>'
 DAY = '<@&991090325894336542>'
 EVENING = '<@&991090361369784360>'
 NIGHT = '<@&991090429342679110>'
+ALL = '<@&1148738786688258101>'
 
 # Users can ping:
 WEEKEND_PING = '<@&1014641471724470423>'
@@ -27,7 +28,7 @@ client = discord.Client(intents=discord.Intents.all())
 
 # Personal cooldown is X minutes, global cooldown is Y minutes
 global_cadence = 10
-user_cadence = 120
+user_cadence = 60
 
 # X votes needed to lift, must be done in Y minutes
 votes = 6
@@ -117,26 +118,29 @@ async def create_message(message, timeslot, now, replacement_string):
         write(str(message.author), str(now))
 
         if timeslot == 'weekend':
-            msg = message.content.replace(replacement_string, WEEKEND)
+            msg = message.content.replace(replacement_string, ALL + ' ' + WEEKEND)
         elif timeslot == 'morning':
-            msg = message.content.replace(replacement_string, MORNING)
+            msg = message.content.replace(replacement_string, ALL + ' ' + MORNING)
         # 8 AM to 5 PM
         elif timeslot == 'day':
-            msg = message.content.replace(replacement_string, DAY)
+            msg = message.content.replace(replacement_string, ALL + ' ' + DAY)
         # 5 PM to 10 PM
         elif timeslot == 'evening':
-            msg = message.content.replace(replacement_string, EVENING)
+            msg = message.content.replace(replacement_string, ALL + ' ' + EVENING)
         # 10 PM to 2 AM
         elif timeslot == 'night':
-            msg = message.content.replace(replacement_string, NIGHT)
+            msg = message.content.replace(replacement_string, ALL + ' ' + NIGHT)
         else:
             msg = message.content
-        # logging catchall to stop pings
+        # logging catch-all to stop pings
         # msg = message.content.replace(replacement_string, timeslot)
 
         await message.reply(msg)
     else:
-        await message.reply('Ping available in ' + str(max((global_cadence - get_time_elapsed(then, now)), (user_cadence - get_time_elapsed(userthen, now)))) + ' minutes.')
+        msg = message.content.replace(replacement_string, ALL)
+        await message.reply(msg)
+        # Old code to inform user they're on cooldown, should be unneeded with All Pings
+        # await message.reply('Ping available in ' + str(max((global_cadence - get_time_elapsed(then, now)), (user_cadence - get_time_elapsed(userthen, now)))) + ' minutes.')
     return
 
 
@@ -194,6 +198,7 @@ async def on_message(message):
 
 @client.event
 async def on_reaction_add(reaction, user):
+    # Vote lift code isn't working, I should fix this one day
     if '/votelift' in reaction.message.content and is_liftable(reaction.message.reactions):
         # you only have X minutes to get the votes
         if reaction.emoji == '🗳️':
