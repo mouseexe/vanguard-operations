@@ -183,13 +183,7 @@ async def on_message(message):
     elif NIGHT_PING in message.content:
         await create_message(message, 'night', now, NIGHT_PING)
     elif VANGUARD_OPS in message.content:
-        # If message contains a timestamp, use that instead of the current time
-        if '<t:' in message.content:
-            time = datetime.fromtimestamp(int(re.search('<t:.{10}(:t)?>', message.content).group(0)[3:13]))
-        else:
-            # Otherwise just use the current time
-            time = now
-        await create_message(message, get_timeslot(time), now, VANGUARD_OPS)
+        await create_message(message, get_timeslot(now), now, VANGUARD_OPS)
 
     # else:
         # log only on failure
