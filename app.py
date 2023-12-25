@@ -60,10 +60,10 @@ def get_timeslot(time):
     # Adjust this whenever Daylight Savings starts or ends
 
     # Daylight
-    time = datetime.fromtimestamp(time.timestamp() - 14400)
+    # time = datetime.fromtimestamp(time.timestamp() - 14400)
 
     # Standard
-    # time = datetime.fromtimestamp(time.timestamp() - 18000)
+    time = datetime.fromtimestamp(time.timestamp() - 18000)
 
     hour = int(time.strftime('%H'))
     day = time.weekday()
