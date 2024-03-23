@@ -59,11 +59,14 @@ def is_liftable(reactions):
 def get_timeslot(time):
     # Adjust this whenever Daylight Savings starts or ends
 
-    # Daylight
-    # time = datetime.fromtimestamp(time.timestamp() - 14400)
+    # Set according to whether or not Daylight Savings Time is active
+    is_daylight = True
 
-    # Standard
-    time = datetime.fromtimestamp(time.timestamp() - 18000)
+    daylight_offset = 18000
+    if is_daylight:
+        daylight_offset = 14400
+
+    time = datetime.fromtimestamp(time.timestamp() - daylight_offset)
 
     hour = int(time.strftime('%H'))
     day = time.weekday()
