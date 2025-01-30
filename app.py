@@ -60,7 +60,7 @@ def get_timeslot(time):
     # Adjust this whenever Daylight Savings starts or ends
 
     # Set according to whether or not Daylight Savings Time is active
-    is_daylight = True
+    is_daylight = False
 
     daylight_offset = 18000
     if is_daylight:
